@@ -1,10 +1,9 @@
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-import matplotlib.pyplot as plt
 
 # Đọc dữ liệu
-df = pd.read_csv("weather_dataset.csv")
+df = pd.read_csv("weather_data_2025_5000.csv")
 
 # Làm sạch và tạo nhãn nhị phân
 df['weather'] = df['weather'].str.lower()
@@ -29,14 +28,15 @@ def du_doan_thoi_tiet(temp_max, temp_min):
     label = 1 if prob >= 0.5 else 0
     return label, prob
 
-# Nhập từ người dùng
-temp_max = float(input("🌡️ Nhập nhiệt độ cao nhất (°C): "))
-temp_min = float(input("🌡️ Nhập nhiệt độ thấp nhất (°C): "))
+if __name__ == "__main__":
+    # Nhập từ người dùng
+    temp_max = float(input("🌡️ Nhập nhiệt độ cao nhất (°C): "))
+    temp_min = float(input("🌡️ Nhập nhiệt độ thấp nhất (°C): "))
 
-# Dự đoán
-label, prob = du_doan_thoi_tiet(temp_max, temp_min)
-ket_qua = "RAIN ☔" if label == 1 else "SUN ☀️"
+    # Dự đoán
+    label, prob = du_doan_thoi_tiet(temp_max, temp_min)
+    ket_qua = "RAIN ☔" if label == 1 else "SUN ☀️"
 
-# In kết quả
-print(f"\n📊 Xác suất có mưa: {prob*100:.2f}%")
-print(f"🌦️  Dự đoán thời tiết: {ket_qua}")
+    # In kết quả
+    print(f"\n📊 Xác suất có mưa: {prob*100:.2f}%")
+    print(f"🌦️  Dự đoán thời tiết: {ket_qua}")
