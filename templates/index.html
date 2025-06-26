@@ -40,7 +40,7 @@
         <br><br>
         <label for="temp_min">Nhiệt độ thấp nhất (°C):</label>
         <input type="number" step="0.1" id="temp_min" name="temp_min" required
-               value="{{ temp_min if temp_min is not none else '' }}">
+                value="{{ temp_min if temp_min is not none else '' }}">
         <br><br>
         <button type="submit">Dự đoán</button>
     </form>
@@ -51,7 +51,10 @@
             <p>Xác suất mưa: {{ (prob * 100)|round(2) }}%</p>
         {% endif %}
         {% if plot_url %}
-            <img src="{{ plot_url }}" alt="Biểu đồ xác suất mưa" />
+            <img src="{{ plot_url }}" alt="Biểu đồ xác suất mưa" style="margin-top: 15px;" />
+            <p style="font-size: 13px; color: #555; margin-top: 5px;">
+                🟨 <em>Cột màu vàng biểu thị xác suất mưa (%) theo nhiệt độ thấp nhất.</em>
+            </p>
         {% endif %}
     {% endif %}
 </body>
