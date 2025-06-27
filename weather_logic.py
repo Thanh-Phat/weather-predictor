@@ -42,14 +42,11 @@ def du_doan_thoi_tiet(temp_max, temp_min):
 
 # --- Hàm vẽ biểu đồ ---
 def plot_prob_dynamic_bar(temp_max, temp_min_start, temp_min_end):
-    if abs(temp_min_start - temp_min_end) > 30:
-        if temp_min_start < temp_min_end:
-            temp_min_end = temp_min_start + 30
-        else:
-            temp_min_start = temp_min_end + 30
+    # Đảm bảo thứ tự: tăng dần
+    if temp_min_start > temp_min_end:
+        temp_min_start, temp_min_end = temp_min_end, temp_min_start
 
-    temp_min_values = list(range(temp_min_end, temp_min_start - 1, -1))
-
+    temp_min_values = list(range(temp_min_start, temp_min_end + 1))
     probabilities = []
 
     for tmn in temp_min_values:
@@ -58,12 +55,25 @@ def plot_prob_dynamic_bar(temp_max, temp_min_start, temp_min_end):
 
     plt.close('all')
     fig, ax = plt.subplots(figsize=(8, 4))
+
+    # Cột màu vàng
     ax.bar(temp_min_values, probabilities, color='gold')
+
+    # ✅ Vẽ đường nối đỉnh cột
+    ax.plot(temp_min_values, probabilities, color='orange', marker='o', linestyle='-', linewidth=2, label='Xác suất mưa')
+
+    # ✅ Vẽ số phần trăm trên cột
+    for x, y in zip(temp_min_values, probabilities):
+        ax.text(x, y + 1, f"{y:.0f}%", ha='center', va='bottom', fontsize=9)
+
     ax.set_xlabel('Nhiệt độ thấp nhất (°C)')
     ax.set_ylabel('Xác suất mưa (%)')
-    ax.set_title(f'Nhiệt độ cao nhất: {temp_max}°C')
+    ax.set_title(f'Nhiệt độ cao nhất: {temp_max:.1f}°C')
     ax.set_ylim(0, 100)
+    ax.set_yticks(range(0, 101, 10))
+    ax.set_xticks(temp_min_values)
     ax.grid(axis='y', linestyle='--', alpha=0.7)
+    ax.legend()
 
     buf = io.BytesIO()
     plt.tight_layout()

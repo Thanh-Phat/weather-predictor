@@ -10,6 +10,9 @@ def home():
         if request.method == 'POST':
             temp_max = float(request.form['temp_max'])
             temp_min = float(request.form['temp_min'])
+            
+            if temp_max > 40 or temp_min < 20:
+                raise ValueError("Nhiệt độ ngoài khoảng cho phép (-10 đến 45 độ C)")
 
             label, prob = du_doan_thoi_tiet(temp_max, temp_min)
             ket_qua = "RAIN ☔" if label == 1 else "SUN ☀️"
