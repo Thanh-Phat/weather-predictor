@@ -5,33 +5,39 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    temp_max = temp_min = prob = ket_qua = plot_url = None
+    temp = humidity = prob = ket_qua = plot_url = None
+
     try:
         if request.method == 'POST':
-            temp_max = float(request.form['temp_max'])
-            temp_min = float(request.form['temp_min'])
-            
-            if temp_max > 40 or temp_min < 20:
-                raise ValueError("Nhiệt độ ngoài khoảng cho phép (-10 đến 45 độ C)")
+            temp = float(request.form['temp'])
+            humidity = float(request.form['humidity'])
 
-            label, prob = du_doan_thoi_tiet(temp_max, temp_min)
-            ket_qua = "RAIN ☔" if label == 1 else "SUN ☀️"
+            if temp > 50 or humidity < 10 or humidity > 100:
+                raise ValueError("Giá trị nằm ngoài phạm vi!")
 
-            temp_min_start = min(int(temp_min), int(temp_max))
-            temp_min_end = max(int(temp_min), int(temp_max))
-            plot_url = plot_prob_dynamic_bar(temp_max, temp_min_start, temp_min_end)
+            label, prob = du_doan_thoi_tiet(humidity, temp)
+            ket_qua = " Có mưa" if label else " Không mưa"
+
+            hum_start = max(10, int(humidity) - 5)
+            hum_end = min(100, int(humidity) + 5)
+            plot_url = plot_prob_dynamic_bar(temp, hum_start, hum_end)
+
         else:
-            plot_url = plot_prob_dynamic_bar(30, 25, 30)
+            temp = 26
+            humidity = 60
+            plot_url = plot_prob_dynamic_bar(temp, 55, 65)
+
     except Exception as e:
-        ket_qua = f"Lỗi xử lý: {e}"
+        ket_qua = f"Lỗi: {e}"
         plot_url = ""
 
     return render_template('index.html',
-                           ket_qua=ket_qua,
-                           prob=prob,
-                           temp_max=temp_max,
-                           temp_min=temp_min,
-                           plot_url=plot_url)
-
+                            ket_qua=ket_qua,
+                            prob=prob,
+                            temp=temp,
+                            humidity=humidity,
+                            plot_url=plot_url)
+    
 if __name__ == '__main__':
     app.run(debug=True)
+
